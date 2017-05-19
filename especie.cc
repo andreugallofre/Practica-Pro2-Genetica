@@ -4,6 +4,7 @@ Especie::Especie()
 {
 
   map<string, Individu> especie;
+
   /*Dades en relació a la identitat genètica de l'especie*/
   int no_cromosomes;
   vector<int> tamany_gens;
@@ -30,30 +31,80 @@ void Especie::completar_arbre_genealogic(string nom)
 	}
 }
 
- void get_arbre(int nivell, string pare, string mare)
+ /*void get_arbre(int nivell, string pare, string mare)
   {
     if (pare != '$')
       Individu pare = get_individu(pare);
   	  Individu mare = get_individu(mare);
-  }
+  }*/
+
+void Especie::escriure_arbre(map<int, list<Individu>> arbre)
+{
+	for(auto elem : arbre)
+	{
+		list<Individu> individus = elem.second;
+
+		cout << "  Nivel " << elem.first << ": ";
+
+		for (auto v : individus){
+        	std::cout << v.consultar_nom() << " ";
+		}
+		
+		cout << endl; 
+	}
+}
 
   void Especie::escriure_arbre_genealogic(string nom)
   {
-    int n = 2;
-    cout << "  Nivel 0: " << nom;
+	Individu ind1;
+	int count = 0;
+	map<int, list<Individu>> arbre;
 
-    Individu ind1 = get_individu(nom);
+	ind1 = get_individu(nom); 
+	esprint(ind1, count, arbre);
 
-    if (ind1.consultar_pares().first != "$")
-    {
-    	get_arbre(pare, mare);
-    }
-
-
-
+	escriure_arbre(arbre);
 
   }
 
+
+ void Especie::esprint(Individu individuo , int count , map<int, list<Individu>> &arbre) {
+ 	
+ 	list<Individu> nivel = arbre[count];
+
+ 	nivel.push_back(individuo);
+
+ 	arbre[count] = nivel;
+
+ 	if (individuo.consultar_pares().first != "$" && individuo.consultar_pares().second != "$")
+ 	{
+ 		count++;
+ 		esprint(get_individu(individuo.consultar_pares().first), count, arbre);
+ 		esprint(get_individu(individuo.consultar_pares().second), count, arbre);
+ 	}
+
+ }
+
+ void Especie::escriure()
+{
+	map<string,Individu>::iterator it = especie.begin();
+
+	while (it != especie.end())
+	{
+		Individu ind = it->second;
+		
+		pair<string,string> pares = ind.consultar_pares();
+		string nom = ind.consultar_nom();
+		string sexe; 
+	
+		if (ind.consultar_sexe()) sexe = "XY";
+		else sexe = "XX";
+
+		cout << "  " << nom << " " << sexe << " (" << pares.first << "," << pares.second << ")" << endl; 
+
+		it++;
+	}
+}
 /*END TODO */  
 
 
@@ -97,30 +148,6 @@ void Especie::llegir_poblacio_inicial()
 		afegir(individu);
 	}
 }
-
-void Especie::escriure()
-{
-	map<string,Individu>::iterator it = especie.begin();
-
-	while (it != especie.end())
-	{
-		Individu ind = it->second;
-		
-		pair<string,string> pares = ind.consultar_pares();
-		string nom = ind.consultar_nom();
-		string sexe; 
-	
-		if (ind.consultar_sexe()) sexe = "XY";
-		else sexe = "XX";
-
-		cout << "  " << nom << " " << sexe << " (" << pares.first << "," << pares.second << ")" << endl; 
-
-		it++;
-	}
-}
-
-
-
 
 
 //		CONSULTORES

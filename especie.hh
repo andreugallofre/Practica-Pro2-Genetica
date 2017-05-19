@@ -48,6 +48,12 @@ public:
 
   //Modificadores
 
+  void esprint(Individu individuo , int count, map<int, list<Individu>> &arbre);
+
+  void escriure_arbre_genealogic(string nom);
+
+  void escriure_arbre(map<int, list<Individu>> arbre);
+
   /** @brief Modificadora del conjunt, n'afegeix un individu
       \pre <em>Cert</em>
       \post El conjunt espècie conté el nou individu

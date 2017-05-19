@@ -109,7 +109,6 @@
       x.llegir_cromosoma(tamany_gens[i-1]);
 
       v[i] = x;
-
     }
 
     cromosomas = v;
@@ -124,14 +123,7 @@
     for (int i = 1; i <= n_cromosomes; i++) cromosomas[i].escriure_cromosoma(tamany_gens[i-1], i);
   }
 
-  void Individu::escriure_arbre_genealogic()
-  {
-    if(nom == "c1")
-    {
-      cout << "  Nivel 0: c1" << endl;
-      cout << "  Nivel 1: b3 a1" << endl;
-    }
-  }
+ 
 
 
 

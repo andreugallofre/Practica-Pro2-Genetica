@@ -81,7 +81,7 @@ int main()
 
 			cout << "escribir_arbol_genealogico " << nom << endl;
 			if(especie.esta_conjunt(nom)){
-				escriure_arbre_genealogic(nom);
+				especie.escriure_arbre_genealogic(nom);
 			}
 			else cout << "  error" << endl;
 		}
