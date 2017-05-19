@@ -103,10 +103,6 @@ public:
 
   void afegir_sexe(bool sexe);
 
-  void escriure_arbre_genealogic();
-
-  string getNivellArbre();
-
   //Entrada_Sortida
   /** @brief Operació de lectura
       \pre Hi han preparats al canal standart totes les dades realcionades amb l'indiviud necesàries

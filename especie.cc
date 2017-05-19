@@ -18,25 +18,69 @@ Especie::Especie()
 
 /* TODO */
 
-	void Especie::completar_arbre_genealogic(string nom)
-{
-	if (nom == "d1") cout << "  no es arbol parcial" << endl;
-	if (nom == "c1") cout << "  c1 *b3* $ $ *a1* $ $" << endl;
-	if (nom == "e1")
-	{
-		string x;
-		cin >> x;
-		if (x == "$") cout << "  no es arbol parcial" << endl;
-		else cout << "  e1 c1 *b3* $ $ *a1* $ $ *m1* $ $" << endl;
-	}
+void Especie::completar_arbre_helper(Individu individuo, list<string> &arbre) {
+
+ 	arbre.push_back(individuo.consultar_pares().first);
+ 
+ 	if (esta_conjunt(individuo.consultar_pares().first)) completar_arbre_helper(get_individu(individuo.consultar_pares().first), arbre);
+ 		
+ 	arbre.push_back(individuo.consultar_pares().second);
+ 	if (esta_conjunt(individuo.consultar_pares().second)) completar_arbre_helper(get_individu(individuo.consultar_pares().second), arbre);
+
 }
 
- /*void get_arbre(int nivell, string pare, string mare)
-  {
-    if (pare != '$')
-      Individu pare = get_individu(pare);
-  	  Individu mare = get_individu(mare);
-  }*/
+
+	string Especie::completar_arbre_genealogic(string nom)
+	{
+		string command, part_arbre = "";
+		Individu ind1;
+		list<string> x, arbre, final;
+	
+	if(not esta_conjunt(nom))
+	{
+		cout << "  no es arbol parcial" << endl;
+	}
+	else{
+		x.push_back(nom);
+		arbre.push_back(nom);
+		cin >> part_arbre;
+
+		while (part_arbre != "completar_arbol_genealogico" && part_arbre != "escribir_arbol_genealogico" && part_arbre != "escribir_genotipo" && part_arbre != "reproduccion_sexual" && part_arbre != "anadir_individuo" && part_arbre != "acabar")
+		{
+			x.push_back(part_arbre);
+			cin >> part_arbre;
+		}
+
+		command = part_arbre;
+
+		completar_arbre_helper(get_individu(nom), arbre);
+
+		list<string>::iterator it;
+		list<string>::iterator it2;
+
+		for(it = x.begin(), it2 = arbre.begin(); it != x.end() && it2 != arbre.end(); ++it, ++it2)
+		{
+			if ((*it) == (*it2)) final.push_back((*it));
+			if ((*it) == "$" && (*it2) != "$") final.push_back("*" + (*it2) + "*");
+		}
+
+		if (it2 != arbre.end()){
+			for(; it2 != arbre.end(); it2++)
+			{
+				if((*it2) == "$") final.push_back("$");
+				else final.push_back("*" + (*it2) + "*"); 
+			}
+		}
+
+		cout << " ";
+		for(auto i : final) cout << " " << i;
+		cout << endl;
+	}
+
+	return command;
+	}
+
+/* END TODO*/
 
 void Especie::escriure_arbre(map<int, list<Individu>> arbre)
 {
@@ -46,7 +90,7 @@ void Especie::escriure_arbre(map<int, list<Individu>> arbre)
 
 		cout << "  Nivel " << elem.first << ":";
 		for (auto v : individus){
-        	std::cout << " " << v.consultar_nom();
+        	cout << " " << v.consultar_nom();
 		}
 		
 		cout << endl; 
@@ -67,7 +111,7 @@ void Especie::escriure_arbre(map<int, list<Individu>> arbre)
   }
 
 
- void Especie::esprint(Individu individuo , int count , map<int, list<Individu>> &arbre) {
+void Especie::esprint(Individu individuo , int count , map<int, list<Individu>> &arbre) {
  	
  	list<Individu> nivel = arbre[count];
 
@@ -104,8 +148,6 @@ void Especie::escriure_arbre(map<int, list<Individu>> arbre)
 		it++;
 	}
 }
-/*END TODO */  
-
 
 void Especie::llegir_dades_especie()
 {
@@ -163,6 +205,16 @@ Individu Especie::get_individu(string nom)
 	return ind;
 }
 
+bool Especie::es_antecesor(string nom, Individu ind){
+	list<string> x;
+
+	completar_arbre_helper(ind, x);
+
+	for(auto i : x) if (i == nom) return true;
+		
+	return false;
+}
+
 bool Especie::es_possible_reproduccio(Individu ind1, Individu ind2)
 {
 		pair<string,string> pares_ind1, pares_ind2;
@@ -179,6 +231,10 @@ bool Especie::es_possible_reproduccio(Individu ind1, Individu ind2)
 		}
 		else if(nom_ind1 == pares_ind2.first || nom_ind1 == pares_ind2.second || pares_ind1.second == nom_ind2 || pares_ind1.second == nom_ind2)
 		{		
+			return false;
+		}
+		else if(es_antecesor(nom_ind2, ind1) || es_antecesor(nom_ind2, ind1))
+		{
 			return false;
 		}
 		else

@@ -34,13 +34,19 @@ int main()
 				
 			}
 			else cout << "  error" << endl;
+
+			cin >> command;
 		}
-		if (command == "escribir_poblacion")
+
+		else if (command == "escribir_poblacion")
 		{
 			cout << "escribir_poblacion" << endl;
 			especie.escriure();
+
+			cin >> command;
 		}
-		if (command == "reproduccion_sexual")
+
+		else if (command == "reproduccion_sexual")
 		{
 			string nom1, nom2;
 			cin >> nom1 >> nom2;
@@ -58,8 +64,11 @@ int main()
 				cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << nom3 << endl;
 				cout << "  error" << endl;
 			}
+
+			cin >> command;
 		}
-		if (command == "escribir_genotipo")
+
+		else if (command == "escribir_genotipo")
 		{
 			string nom;
 			cin >> nom;
@@ -73,8 +82,11 @@ int main()
 			}  
 			//Obtenim l'individu a partir d'un nom i n'imprimim el genotip
 			else cout << "  error" << endl;
+
+			cin >> command;
 		}
-		if (command == "escribir_arbol_genealogico")
+
+		else if (command == "escribir_arbol_genealogico")
 		{
 			string nom;
 			cin >> nom;
@@ -84,17 +96,21 @@ int main()
 				especie.escriure_arbre_genealogic(nom);
 			}
 			else cout << "  error" << endl;
+
+			cin >> command;
 		}
-		if (command == "completar_arbol_genealogico")
+		
+		else if (command == "completar_arbol_genealogico")
 		{
 			string nom;
 			cin >> nom;
 
 			cout << "completar_arbol_genealogico " << nom << endl;
-			especie.completar_arbre_genealogic(nom);
+			command = especie.completar_arbre_genealogic(nom);
 		}
-		cin >> command;
+		else cin >> command;
+		
 	}
 
-	cout << "acabar";
+	cout << "acabar"  << endl;
 }

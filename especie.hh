@@ -48,6 +48,8 @@ public:
 
   //Modificadores
 
+  bool es_antecesor(string nom, Individu ind);
+
   void esprint(Individu individuo , int count, map<int, list<Individu>> &arbre);
 
   void escriure_arbre_genealogic(string nom);
@@ -167,7 +169,9 @@ public:
       \pre Cert
       \post S'imprimeixen al canal stadart de sortida l'arbre genalogic del individu donat completat
   */
-  void completar_arbre_genealogic(string nom);
+  string completar_arbre_genealogic(string nom);
+
+  void completar_arbre_helper(Individu individuo, list<string> &arbre);
 
 };
 #endif
