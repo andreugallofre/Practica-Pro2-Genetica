@@ -18,7 +18,7 @@ Especie::Especie()
 
 /* TODO */
 
-void Especie::completar_arbre_genealogic(string nom)
+	void Especie::completar_arbre_genealogic(string nom)
 {
 	if (nom == "d1") cout << "  no es arbol parcial" << endl;
 	if (nom == "c1") cout << "  c1 *b3* $ $ *a1* $ $" << endl;
@@ -44,10 +44,9 @@ void Especie::escriure_arbre(map<int, list<Individu>> arbre)
 	{
 		list<Individu> individus = elem.second;
 
-		cout << "  Nivel " << elem.first << ": ";
-
+		cout << "  Nivel " << elem.first << ":";
 		for (auto v : individus){
-        	std::cout << v.consultar_nom() << " ";
+        	std::cout << " " << v.consultar_nom();
 		}
 		
 		cout << endl; 
