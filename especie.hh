@@ -48,6 +48,8 @@ public:
 
   //Modificadores
 
+  pair<bool,string> completar_arbre_i(list<string> &x, list<string> &arbre, list<string> &final, string nom);
+
   bool es_antecesor(string nom, Individu ind);
 
   void esprint(Individu individuo , int count, map<int, list<Individu>> &arbre);

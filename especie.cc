@@ -30,11 +30,102 @@ void Especie::completar_arbre_helper(Individu individuo, list<string> &arbre) {
 }
 
 
-	string Especie::completar_arbre_genealogic(string nom)
+pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbre, list<string> &final, string nom)
+{
+
+	string part_arbre;
+	pair<bool, string> res(true,"");
+	cin >> part_arbre;
+
+	while (part_arbre != "completar_arbol_genealogico" && part_arbre != "escribir_arbol_genealogico" && part_arbre != "escribir_genotipo" && part_arbre != "reproduccion_sexual" && part_arbre != "anadir_individuo" && part_arbre != "acabar")
 	{
-		string command, part_arbre = "";
-		Individu ind1;
-		list<string> x, arbre, final;
+		x.push_back(part_arbre);
+		cin >> part_arbre;
+	}
+
+	res.second = part_arbre;
+
+	completar_arbre_helper(get_individu(nom), arbre);
+
+	list<string>::iterator it = x.begin();
+	list<string>::iterator it2 = arbre.begin();
+
+	cerr << "  arbre entrat:"<< endl << " ";
+	for(auto i : x) cerr << " " << i;
+	cerr << endl;
+
+	cerr << "  arbre individu:" << endl << " ";
+	cerr << " ";
+	for(auto i : arbre) cerr << " " << i;
+	cerr << endl;
+ 	
+	bool condition = false;
+
+	cerr << "test outside" << endl;
+	
+	cerr << (*it) << endl;
+	cerr << (*it2) << endl;
+
+	while(it != x.end() && it2 != arbre.end())
+	{
+		if((*it) == (*it2)){
+			cerr << "Test" << endl;
+			final.push_back(*it2);
+			it++;
+			it2++;
+			condition = false;
+		} 
+		else if ((*it) == "$"){
+			cerr << "Test 2" << endl;
+			condition = true;
+			while(it != x.end() && (*it) == "$") it++;
+			if(it == x.end())
+			{
+
+				while(it2 != arbre.end()){
+					if((*it2) != "$"){
+						final.push_back("*" + (*it2) + "*");
+						it2++;
+					}
+					else{
+						final.push_back((*it2));
+						it2++;
+					}
+				}
+			}
+
+		}
+		else if (it2 != arbre.end() && condition)
+		{
+			if((*it2) != "$"){
+				final.push_back("*" + (*it2) + "*");
+				it2++;
+			}
+			else{
+				final.push_back((*it2));
+				it2++;
+			}
+		}
+		else if((*it) != "$" && (*it2) == "$")
+		{
+			res.first = false;
+			return res;
+		}
+		else{
+			res.first = false;
+			return res;
+		} 
+	}
+	
+	return res;
+
+}
+
+string Especie::completar_arbre_genealogic(string nom)
+{
+	string command, part_arbre = "";
+	Individu ind1;
+	list<string> x, arbre, final;
 	
 	if(not esta_conjunt(nom))
 	{
@@ -43,44 +134,24 @@ void Especie::completar_arbre_helper(Individu individuo, list<string> &arbre) {
 	else{
 		x.push_back(nom);
 		arbre.push_back(nom);
-		cin >> part_arbre;
 
-		while (part_arbre != "completar_arbol_genealogico" && part_arbre != "escribir_arbol_genealogico" && part_arbre != "escribir_genotipo" && part_arbre != "reproduccion_sexual" && part_arbre != "anadir_individuo" && part_arbre != "acabar")
-		{
-			x.push_back(part_arbre);
-			cin >> part_arbre;
+		pair<bool,string> test = completar_arbre_i(x, arbre, final, nom);
+
+		if(test.first){
+			cout << " ";
+			for(auto i : final) cout << " " << i;
+			cout << endl;
+			command	= test.second;
 		}
-
-		command = part_arbre;
-
-		completar_arbre_helper(get_individu(nom), arbre);
-
-		list<string>::iterator it;
-		list<string>::iterator it2;
-
-		for(it = x.begin(), it2 = arbre.begin(); it != x.end() && it2 != arbre.end(); ++it, ++it2)
-		{
-			if ((*it) == (*it2)) final.push_back((*it));
-			if ((*it) == "$" && (*it2) != "$") final.push_back("*" + (*it2) + "*");
+		else{
+			command	= test.second;
+			cout << "  no es arbol parcial" << endl;
 		}
-
-		if (it2 != arbre.end()){
-			for(; it2 != arbre.end(); it2++)
-			{
-				if((*it2) == "$") final.push_back("$");
-				else final.push_back("*" + (*it2) + "*"); 
-			}
-		}
-
-		cout << " ";
-		for(auto i : final) cout << " " << i;
-		cout << endl;
 	}
 
 	return command;
 	}
 
-/* END TODO*/
 
 void Especie::escriure_arbre(map<int, list<Individu>> arbre)
 {
@@ -211,7 +282,7 @@ bool Especie::es_antecesor(string nom, Individu ind){
 	completar_arbre_helper(ind, x);
 
 	for(auto i : x) if (i == nom) return true;
-		
+
 	return false;
 }
 
@@ -229,9 +300,25 @@ bool Especie::es_possible_reproduccio(Individu ind1, Individu ind2)
 		{
 			return false;
 		}
-		else if(nom_ind1 == pares_ind2.first || nom_ind1 == pares_ind2.second || pares_ind1.second == nom_ind2 || pares_ind1.second == nom_ind2)
-		{		
-			return false;
+		else if(pares_ind1.first != "$" && pares_ind2.first != "$"){
+			if (pares_ind1.first == pares_ind2.first){
+				cerr << "First First " << pares_ind1.first << " " << pares_ind2.first << endl;
+				return false;
+			}
+			if (pares_ind1.first == pares_ind2.second){
+				cerr << "First Second " << pares_ind1.first << " " << pares_ind2.second << endl;
+				return false;				
+			}
+			if (pares_ind1.second == pares_ind2.first){
+				cerr << "Second First " << pares_ind1.second << " " << pares_ind2.first << endl;
+				return false;
+			} 
+			if (pares_ind1.second == pares_ind2.second){
+				cerr << "Second Second " << pares_ind1.second << " " << pares_ind2.second << endl;
+				return false;
+			}
+
+			return true;
 		}
 		else if(es_antecesor(nom_ind2, ind1) || es_antecesor(nom_ind2, ind1))
 		{
