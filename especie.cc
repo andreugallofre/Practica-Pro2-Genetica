@@ -35,6 +35,8 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 
 	string part_arbre;
 	pair<bool, string> res(true,"");
+	
+
 	cin >> part_arbre;
 
 	while (part_arbre != "completar_arbol_genealogico" && part_arbre != "escribir_arbol_genealogico" && part_arbre != "escribir_genotipo" && part_arbre != "reproduccion_sexual" && part_arbre != "anadir_individuo" && part_arbre != "acabar")
@@ -43,46 +45,54 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 		cin >> part_arbre;
 	}
 
+	cerr << "Command " << part_arbre << endl;
+
 	res.second = part_arbre;
 
 	completar_arbre_helper(get_individu(nom), arbre);
 
 	list<string>::iterator it = x.begin();
 	list<string>::iterator it2 = arbre.begin();
+	list<string>::iterator aux = arbre.end();
 
-	cerr << "  arbre entrat:"<< endl << " ";
+	cerr << "  arbre entrat:"<< endl << "   ";
 	for(auto i : x) cerr << " " << i;
 	cerr << endl;
 
-	cerr << "  arbre individu:" << endl << " ";
-	cerr << " ";
+	cerr << " arbre individu:" << endl << " ";
+	cerr << "  ";
 	for(auto i : arbre) cerr << " " << i;
 	cerr << endl;
  	
 	bool condition = false;
 
-	cerr << "test outside" << endl;
-	
-	cerr << (*it) << endl;
-	cerr << (*it2) << endl;
-
 	while(it != x.end() && it2 != arbre.end())
 	{
+		cerr << "iter while " << endl;
 		if((*it) == (*it2)){
-			cerr << "Test" << endl;
-			final.push_back(*it2);
-			it++;
-			it2++;
-			condition = false;
+			cerr << "it = it2" << endl;
+			if(aux != it2){
+				final.push_back(*it2);
+				it++;
+				it2++;
+				condition = false;
+			}
+			else{
+				cerr << "Error auxiliar" << endl;
+				res.first = false;
+				return res;
+			}
+
 		} 
 		else if ((*it) == "$"){
-			cerr << "Test 2" << endl;
+			cerr << "it = $" << endl;
+			aux = it2;
 			condition = true;
 			while(it != x.end() && (*it) == "$") it++;
 			if(it == x.end())
 			{
-
 				while(it2 != arbre.end()){
+					cerr << "Arbre2 not end" << endl;
 					if((*it2) != "$"){
 						final.push_back("*" + (*it2) + "*");
 						it2++;
@@ -93,10 +103,10 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 					}
 				}
 			}
-
 		}
 		else if (it2 != arbre.end() && condition)
 		{
+			cerr << "it2 not end i condicio" << endl;
 			if((*it2) != "$"){
 				final.push_back("*" + (*it2) + "*");
 				it2++;
@@ -108,15 +118,23 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 		}
 		else if((*it) != "$" && (*it2) == "$")
 		{
+			cerr << "Error $ i != $" << endl;
 			res.first = false;
 			return res;
 		}
 		else{
+			cerr << "Altres errors" << endl;
 			res.first = false;
 			return res;
 		} 
 	}
-	
+
+	if((it != x.end() && it2 == arbre.end()) || (it2 != arbre.end() && it == x.end()))
+	{
+		res.first = false;
+		return res;
+	}
+
 	return res;
 
 }
@@ -296,8 +314,9 @@ bool Especie::es_possible_reproduccio(Individu ind1, Individu ind2)
 		pares_ind1 = ind1.consultar_pares();
 		pares_ind2 = ind2.consultar_pares();
 
-		if (ind1.consultar_sexe() == ind2.consultar_sexe())
+		if (ind1.consultar_sexe() == true || ind2.consultar_sexe() == false || ind1.consultar_sexe() == ind2.consultar_sexe())
 		{
+			cerr << "Fallo per sexe" << endl;
 			return false;
 		}
 		else if(pares_ind1.first != "$" && pares_ind2.first != "$"){
@@ -322,6 +341,7 @@ bool Especie::es_possible_reproduccio(Individu ind1, Individu ind2)
 		}
 		else if(es_antecesor(nom_ind2, ind1) || es_antecesor(nom_ind2, ind1))
 		{
+			cerr << "Fallada per antecesor" << endl;
 			return false;
 		}
 		else
@@ -389,20 +409,17 @@ void Especie::afegir(Individu ind1)
 	especie[ind1.consultar_nom()] = ind1;
 }
 
-pair<string,bool> Especie::reproduir_individus(string nom1, string nom2)
+pair<string,bool> Especie::reproduir_individus(string nom1, string nom2, string nom3)
 {
-	string nom3;
 	bool possible;
 	Individu mare, pare;
 
 	Individu fill;
 
-	cin >> nom3;
-
 	mare = get_individu(nom1);
 	pare = get_individu(nom2);
 
-	if (not esta_conjunt(nom3) && es_possible_reproduccio(mare, pare))
+	if (es_possible_reproduccio(mare, pare))
 	{
 		possible = true;
 

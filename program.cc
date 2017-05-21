@@ -48,19 +48,17 @@ int main()
 
 		else if (command == "reproduccion_sexual")
 		{
-			string nom1, nom2;
-			cin >> nom1 >> nom2;
+			string nom1, nom2, nom3;
+			cin >> nom1 >> nom2 >> nom3;
 
-			if(especie.esta_conjunt(nom1) && especie.esta_conjunt(nom2)){
-				pair<string,bool> x = especie.reproduir_individus(nom1, nom2);
+			if(not especie.esta_conjunt(nom3) && especie.esta_conjunt(nom1) && especie.esta_conjunt(nom2)){
+				pair<string,bool> x = especie.reproduir_individus(nom1, nom2, nom3);
 				
-				cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << x.first << endl;
+				cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << nom3 << endl;
 				if (not x.second) cout << "  no es posible reproduccion" << endl;
 				
 			}
 			else{
-				string nom3;
-				cin >> nom3;
 				cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << nom3 << endl;
 				cout << "  error" << endl;
 			}
