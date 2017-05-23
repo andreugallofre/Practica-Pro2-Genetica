@@ -35,3 +35,4 @@ tar:
 clean:
 	rm *.o
 	rm *.exe
+	rm *.tar
