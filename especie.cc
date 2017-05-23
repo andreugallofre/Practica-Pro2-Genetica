@@ -59,6 +59,8 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 	for(auto i : x) cerr << " " << i;
 	cerr << endl;
 
+	cerr << "TEST " << endl;
+
 	cerr << " arbre individu:" << endl << " ";
 	cerr << "  ";
 	for(auto i : arbre) cerr << " " << i;
@@ -306,48 +308,44 @@ bool Especie::es_antecesor(string nom, Individu ind){
 
 bool Especie::es_possible_reproduccio(Individu ind1, Individu ind2)
 {
+		bool res = true;
+
+		//Pares dels individus
 		pair<string,string> pares_ind1, pares_ind2;
 		
+		//Nom dels individus
 		string nom_ind1 = ind1.consultar_nom();
 		string nom_ind2 = ind2.consultar_nom();
 
+		//Agafem els noms dels pares
 		pares_ind1 = ind1.consultar_pares();
 		pares_ind2 = ind2.consultar_pares();
 
-		if (ind1.consultar_sexe() == true || ind2.consultar_sexe() == false || ind1.consultar_sexe() == ind2.consultar_sexe())
+		//Comprovem que el sexe dels pares sigui correcte
+		if (ind1.consultar_sexe() == true || ind2.consultar_sexe() == false)
 		{
-			cerr << "Fallo per sexe" << endl;
-			return false;
+			cerr << "Fallo per sexe" << " MARE:" << nom_ind1 << " PARE:" << nom_ind2 <<endl;
+			res = false;
 		}
+		//Mirem que els pares no sigun buits
 		else if(pares_ind1.first != "$" && pares_ind2.first != "$"){
 			if (pares_ind1.first == pares_ind2.first){
-				cerr << "First First " << pares_ind1.first << " " << pares_ind2.first << endl;
-				return false;
+				cerr << "Mare 1 = Mare 2 " << pares_ind1.first << " " << pares_ind2.first << endl;
+				res = false;
 			}
-			if (pares_ind1.first == pares_ind2.second){
-				cerr << "First Second " << pares_ind1.first << " " << pares_ind2.second << endl;
-				return false;				
-			}
-			if (pares_ind1.second == pares_ind2.first){
-				cerr << "Second First " << pares_ind1.second << " " << pares_ind2.first << endl;
-				return false;
-			} 
 			if (pares_ind1.second == pares_ind2.second){
-				cerr << "Second Second " << pares_ind1.second << " " << pares_ind2.second << endl;
-				return false;
+				cerr << " Pare 1 = Pare 2 " << pares_ind1.second << " " << pares_ind2.second << endl;
+				res = false;
 			}
-
-			return true;
 		}
-		else if(es_antecesor(nom_ind2, ind1) || es_antecesor(nom_ind2, ind1))
+		else if(es_antecesor(nom_ind2, ind1) || es_antecesor(nom_ind1, ind2))
 		{
 			cerr << "Fallada per antecesor" << endl;
-			return false;
+			res = false;
 		}
-		else
-		{
-			return true;
-		}
+		if(not res) cout << "  no es posible reproduccion" << endl;
+
+		return res;
 }
 
 bool Especie::esta_conjunt(string nom)
@@ -409,19 +407,24 @@ void Especie::afegir(Individu ind1)
 	especie[ind1.consultar_nom()] = ind1;
 }
 
-pair<string,bool> Especie::reproduir_individus(string nom1, string nom2, string nom3)
+void Especie::reproduir_individus(string nom1, string nom2, string nom3)
 {
-	bool possible;
+
 	Individu mare, pare;
 
 	Individu fill;
 
-	mare = get_individu(nom1);
-	pare = get_individu(nom2);
+	cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << nom3 << endl;
 
-	if (es_possible_reproduccio(mare, pare))
-	{
-		possible = true;
+	if(not esta_conjunt(nom1)) cout << "  error" << endl;
+	else if (not esta_conjunt(nom2)) cout << "  error" << endl;
+	else if(esta_conjunt(nom3)) cout << "  error" << endl;
+	else{
+		mare = get_individu(nom1);
+		pare = get_individu(nom2);
+
+		if (es_possible_reproduccio(mare, pare))
+		{
 
 		fill.afegir_pares(nom2, nom1);
 		fill.afegir_nom(nom3);
@@ -455,9 +458,9 @@ pair<string,bool> Especie::reproduir_individus(string nom1, string nom2, string 
 		this->especie[nom3] = fill;
 
 	}
-	else possible = false;
-
-	return pair<string,bool> (nom3,possible);
+	}
+	
+	
 }
 
 

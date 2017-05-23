@@ -50,18 +50,7 @@ int main()
 		{
 			string nom1, nom2, nom3;
 			cin >> nom1 >> nom2 >> nom3;
-
-			if(not especie.esta_conjunt(nom3) && especie.esta_conjunt(nom1) && especie.esta_conjunt(nom2)){
-				pair<string,bool> x = especie.reproduir_individus(nom1, nom2, nom3);
-				
-				cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << nom3 << endl;
-				if (not x.second) cout << "  no es posible reproduccion" << endl;
-				
-			}
-			else{
-				cout << "reproduccion_sexual " << nom1 << " " << nom2 << " " << nom3 << endl;
-				cout << "  error" << endl;
-			}
+			especie.reproduir_individus(nom1, nom2, nom3);
 
 			cin >> command;
 		}
@@ -102,7 +91,6 @@ int main()
 		{
 			string nom;
 			cin >> nom;
-
 			cout << "completar_arbol_genealogico " << nom << endl;
 			command = especie.completar_arbre_genealogic(nom);
 		}

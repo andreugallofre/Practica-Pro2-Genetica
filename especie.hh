@@ -68,7 +68,7 @@ public:
       \pre <em>Cert</em>
       \post Afegeix l'individu fruit de la reproduccio entre els individus indicats al canal standart d'entrada
   */
-  pair<string,bool> reproduir_individus(string nom1, string nom2, string nom3);
+  void reproduir_individus(string nom1, string nom2, string nom3);
 
   /** @brief Modificadora del tamany dels gens de l'especie
       \pre <em>Cert</em>
