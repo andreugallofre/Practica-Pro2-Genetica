@@ -16,8 +16,6 @@ Especie::Especie()
 
 }
 
-/* TODO */
-
 void Especie::completar_arbre_helper(Individu individuo, list<string> &arbre) {
 
  	arbre.push_back(individuo.consultar_pares().first);
@@ -39,7 +37,7 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 
 	cin >> part_arbre;
 
-	while (part_arbre != "completar_arbol_genealogico" && part_arbre != "escribir_arbol_genealogico" && part_arbre != "escribir_genotipo" && part_arbre != "reproduccion_sexual" && part_arbre != "anadir_individuo" && part_arbre != "acabar")
+	while (part_arbre != "escribir_poblacion" && part_arbre != "completar_arbol_genealogico" && part_arbre != "escribir_arbol_genealogico" && part_arbre != "escribir_genotipo" && part_arbre != "reproduccion_sexual" && part_arbre != "anadir_individuo" && part_arbre != "acabar")
 	{
 		x.push_back(part_arbre);
 		cin >> part_arbre;
@@ -58,8 +56,6 @@ pair<bool,string> Especie::completar_arbre_i(list<string> &x, list<string> &arbr
 	cerr << "  arbre entrat:"<< endl << "   ";
 	for(auto i : x) cerr << " " << i;
 	cerr << endl;
-
-	cerr << "TEST " << endl;
 
 	cerr << " arbre individu:" << endl << " ";
 	cerr << "  ";
